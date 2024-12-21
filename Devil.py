@@ -197,6 +197,9 @@ if __name__=="__main__":
             spk("Thank You BOSS,Have a great day")
             sys.exit()
 
+        elif"introduce yourself"in query or "tell me about you"in query or "tell me about yourself"in query:
+            spk("Glad to hear that, I am, Devil ,An AI developed by Shiva G ,Here to do your work easy by voice ")
+
         spk("BOSS,any other work")
 
 
