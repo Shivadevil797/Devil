@@ -1,6 +1,7 @@
 import os
 import random
 import time
+from PyPDF2 import PdfReader
 import pyautogui
 import pyttsx3
 import speech_recognition as sc
@@ -13,8 +14,8 @@ from wikipedia import summary
 import webbrowser
 import pywhatkit as kit
 import sys
-#import smtplib as slip
-#import pyjokes as pk
+#import smtpmail as slip
+import pyjokes as pk 
 
 
 
@@ -29,7 +30,6 @@ def spk(audio):
     engine.runAndWait()
 def news():
     main_url='http://newsapi.org/v2/top-headlines?sources=techcrunch&apiKey=6ed667a322df40418ade476103b8dd78'
-
     main_page=requests.get(main_url).json()
     articles=main_page["articles"]
     head=[]
@@ -38,18 +38,19 @@ def news():
         head.append(ar["title"])
     for i in range(len(day)):
         spk(f"today's {day[i]} news is : {head[i]}")
-def tc():
+
+
+def tc() -> str:
     v = sc.Recognizer()
     with sc.Microphone() as src:
         print("listening")
         v.pause_threshold = 0.5
-        audio=v.listen(src,timeout=10,phrase_time_limit=10)
+        audio=v.listen(src,timeout=12,phrase_time_limit=12)
     try:
         print("Recognizing")
         query = v.recognize_google(audio, language='en-in')
         print(f"Command:{query}")
         #spk(query)
-
 
     except Exception as e:
         spk("Say that Again Boss")
@@ -58,16 +59,30 @@ def tc():
 
 def wish():
     hr=int(datetime.datetime.now().hour)
-    tim = time.strftime("%I:%M %p")
+    tim = time.strftime("%I:%M:%S %p")
 
     if hr>=0 and hr<=12:
-        spk("Good Morning , its {tim} BOSS")
+        spk(f"Good Morning , its {tim} BOSS")
     elif hr>12 and hr<=18:
         spk(f"Good Afternoon , its {tim} BOSS")
     else:
         spk(f"Good Evening , its {tim} BOSS")
-    spk("I am, Devil, how can i help you ?")
+    spk("I am, Devil, how can i help you")
 
+def pdf_read():
+    try:
+        book = open('C:\\Users\\SHIVASAI\\Downloads\\imp pdf.pdf','rb')
+   # Pdf= pdfreader.version(book)
+        pdfreader = PdfReader(book)
+        pages =len(pdfreader.pages)
+        spk(f"Total number of pages in this book is {pages} Boss")
+        spk("Boss Enter the page number you want to read")
+        pg=int(input())
+        page=pdfreader.pages[pg-1]
+        text=page.extract_text()
+        spk(text)
+    except Exception as e:
+        print(f"An error occurred:{e}")
 
 if __name__=="__main__":
     wish()
@@ -77,7 +92,6 @@ if __name__=="__main__":
     #if 1:
 
         query = tc().lower()
-
         if "notepad" in query:
             pth="C:\\Windows\\System32\\notepad.exe"
             os.startfile(pth)
@@ -90,16 +104,15 @@ if __name__=="__main__":
             while True:
                 ret, img = cp.read()
                 cv2.imshow('webcam', img)
-                k=cv2.waitKey(50)
-                if k==27:
-                    break;
+                if cv2.waitKey(10)& 0xFF == 27:
+                    break
             cp.release()
             cv2.destroyAllWindows()
 
         elif"play song" in query or "music" in query:
             music_dir="C:\\Users\\SHIVASAI\\Downloads\\songs"
             songs = os.listdir(music_dir)
-            #rd = random.choice(songs)
+            rd = random.choice(songs)
             for song in songs:
                 if song.endswith(".mp3"):
                     os.startfile(os.path.join(music_dir,songs[0]))
@@ -113,6 +126,7 @@ if __name__=="__main__":
         elif "ip address" in query:
             ip = get("https://api.ipify.org").text
             spk(f"your ip address is {ip}")
+            print(f"ip {ip}")
 
         elif "wikipedia" in query:
             spk("searching wikipedia...")
@@ -138,18 +152,18 @@ if __name__=="__main__":
             webbrowser.open("www.stackoverflow.com")
 
         elif "google" in query:
-                   spk("What do you need Boss")
-                   cm= tc().lower()
-                   webbrowser.open(f"{cm}")
+            spk("What do you need Boss")
+            cm= tc().lower()
+            webbrowser.open(f"{cm}")
 
         elif "open case" in query:
             webbrowser.open("www.google.com")
 
-        elif "send message" in query or "text" in query:
-            time.sleep(120)
-            kit.sendwhatmsg("+919113516754","HI AMMA",12,30)
+        #elif "send message" in query or "text" in query:
+            #time.sleep(120)
+            #kit.sendwhatmsg("+919113516754","HI AMMA",12,30)
 
-        elif"close notepad" in query:
+        elif"close note" in query:
             spk("Done BOSS")
             os.system("taskkill /f /im notepad.exe")
 
@@ -178,8 +192,29 @@ if __name__=="__main__":
         elif "walk" in query:
             kit.playonyt("Alan Walker")
 
+        elif"stupid" in query:
+            kit.playonyt("Skibidi Toilet Full Song Music Video")
+
+        elif"sigma" in query:
+            kit.playonyt("Sigma Boy (RMX)")
+
+        elif"let's go" in query:
+            kit.playonyt("AUTOMOTIVO MANGOS–(DJ BRZ 013)")
+
+        elif"gamer" in query:
+            kit.playonyt("Chapati Hindustani Gamer")
+
+        elif"minecraft" in query:
+            kit.playonyt("Hindustan Gamer Loggy")
+
+        elif"game" in query:
+            kit.playonyt("")
+
+        elif"gojo" in query:
+            kit.playonyt("empathy - crystal castles [edit audio]")
+
         elif "gangster" in query:
-            kit.playonyt("Gangster Paradise - COOLIO")
+            kit.playonyt("Gangster Paradise -COOLIO")
 
         elif"shift"in query or "window"in query:
             pyautogui.keyDown("alt")
@@ -189,7 +224,7 @@ if __name__=="__main__":
 
 
         elif"headlines devil"in query:
-            spk("Doing BOSS")
+            spk("Working on it BOSS")
             news()
 
 
@@ -200,8 +235,60 @@ if __name__=="__main__":
         elif"introduce yourself"in query or "tell me about you"in query or "tell me about yourself"in query:
             spk("Glad to hear that, I am, Devil ,An AI developed by Shiva G ,Here to do your work easy by voice ")
 
+        elif "where am i" in query or "where are we" in query:
+            spk("Working on it BOSS")
+            try:
+                ip=requests.get('https://api.ipify.org').text
+                print(ip)
+                url='https://get.geojs.io/v1/ip/geo/'+ip+'.json'
+                geo_requests=requests.get(url)
+                geo_data=geo_requests.json()
+                city=geo_data['city']
+                country=geo_data['country']
+                spk(f"I am not sure, but here is some info of city {city} and country {country}")
+            except  ExceptionGroup as e:
+                spk("Sorry i am not able to get it ")
+                pass
+
+        elif"take screenshot"in query:
+            spk("Working on it BOSS, suggest a Name ")
+            name=tc().lower()
+            spk(f"Taking screenshot of {name} Boss")
+            time.sleep(3)
+            img=pyautogui.screenshot()
+            img.save(f"{name}.png")
+            spk(f"Screenshot taken and saved as {name} Boss")
+
+        elif"read pdf"in query:
+            pdf_read()
+
+        elif"hello"in query or "hi"in query:
+            spk("Hello Boss")
+            spk("How are you ?")
+
+        elif"i am fine"in query or "i am good"in query or "i am doing well"in query :
+            spk("Great BOSS")
+            spk("its glad to hear that")
+
+        elif"i am not fine"in query or "i am not good"in query or "i am not doing well"in query:
+            spk("Sure BOSS")
+            spk("Tell me how can i help you")
+
+        elif"what is your name"in query:
+            spk("I am Devil")
+
+        elif"who are you"in query:
+            spk("I am an Ai model developed by Shiva G")
+
+        elif"dance"in query:
+            spk("Sorry I am not able to dance")
+            spk("But i can tell you a joke")
+            spk("that is ...........")
+            spk("I am so intelligent.........")
+
+        elif"what's an AI"in query:
+            spk("An Artificial Helper in everything or By Doing work easy for humans")
+            spk("Created By humans.......")
+            spk("Example, i am Created by Shiva G")
+
         spk("BOSS,any other work")
-
-
-
-
