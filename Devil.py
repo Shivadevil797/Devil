@@ -28,6 +28,8 @@ def spk(audio):
     engine.say(audio)
     print(audio)
     engine.runAndWait()
+
+    
 def news():
     main_url='http://newsapi.org/v2/top-headlines?sources=techcrunch&apiKey=6ed667a322df40418ade476103b8dd78'
     main_page=requests.get(main_url).json()
@@ -72,7 +74,7 @@ def wish():
 def pdf_read():
     try:
         book = open('C:\\Users\\SHIVASAI\\Downloads\\imp pdf.pdf','rb')
-   # Pdf= pdfreader.version(book)
+    # Pdf= pdfreader.version(book)
         pdfreader = PdfReader(book)
         pages =len(pdfreader.pages)
         spk(f"Total number of pages in this book is {pages} Boss")
@@ -110,12 +112,11 @@ if __name__=="__main__":
             cv2.destroyAllWindows()
 
         elif"play song" in query or "music" in query:
-            music_dir="C:\\Users\\SHIVASAI\\Downloads\\songs"
-            songs = os.listdir(music_dir)
-            rd = random.choice(songs)
-            for song in songs:
-                if song.endswith(".mp3"):
-                    os.startfile(os.path.join(music_dir,songs[0]))
+            music_dir="C:\\Users\\SHIVASAI\\Downloads\\songs\\music"
+            songs = [song for song in os.listdir(music_dir) if song.endswith(".mp3")]
+            if songs:
+                rd = random.choice(songs)
+                os.startfile(os.path.join(music_dir, rd))
 
         elif "video" in query or "movie" in query:
             vid_dir="C:\\Users\\SHIVASAI\\Downloads\\video"
